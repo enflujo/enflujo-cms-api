@@ -36,6 +36,14 @@ Este es el comando que usamos cada ves que queremos iniciar la aplicación local
 docker-compose up -d
 ```
 
+El CMS queda disponible en: http://localhost:8055/
+
+Las credenciales del usuario predeterminado son:
+
+email: **admin@admin.com**
+
+clave: **admin**
+
 Para apagar los contenedores:
 
 ```sh
