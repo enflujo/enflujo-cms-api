@@ -1,5 +1,7 @@
 # EnFlujo CMS + API
 
+<img src="./uploads/73f63da8-453b-4db1-b4e3-c1f5da609f8f.svg" alt="EnFlujo Laboratorio" width="400">
+
 El administrador de contenidos para los diferentes sitios web del laboratorio.
 
 Es un *headless CMS* en [Directus](https://directus.io/) independiente de las aplicaciones que construyen los sitios web. La idea es que el CMS sea un sitio único para administrar los contenidos, y que este exponga los datos por medio de un API. Usamos la nueva versión de Directus **>9** que esta hecha en NodeJS (antes era PHP).
