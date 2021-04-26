@@ -59,14 +59,11 @@ $RECYCLE.BIN/
 
 
 ############################
-# Logs y bases de datos
+# Logs
 ############################
 
 .tmp
 *.log
-*.sql
-*.sqlite
-*.sqlite3
 
 ############################
 # Node.js
