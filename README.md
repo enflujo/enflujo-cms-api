@@ -133,3 +133,7 @@ El proceso debe ser así:
 3. Borrar la imagen que se reemplazó desde "File Library".
 
 Estos cambios sólo se verán reflejados en esta versión del CMS de desarrollo y no en la de producción. Lo hacemos sólo para tener una versión personalizada en el espacio de desarrollo. Para cambiar la de producción, se deben repetir estos pasos en el administrador público.
+
+## TODO
+
+- Usar Switches para ignorar algunas tablas durante el dump. https://stackoverflow.com/questions/40642359/ignoring-a-table-in-pg-dump-and-restore
