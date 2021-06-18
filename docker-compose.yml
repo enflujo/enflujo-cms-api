@@ -12,6 +12,8 @@ services:
     container_name: enflujo-cms-database
     # La imagen para la base de datos que se descarga de docker hub. 
     image: postgres:13
+    ports:
+      - 5432:5432
     # Persistencia de datos ya que cuando se apaga el contenedor se pierde.
     # La copia local que se mapea con el contenedor esta en /cms/data.
     volumes:
@@ -91,6 +93,21 @@ services:
       # https://docs.directus.io/reference/environment-variables/#misc
       ADMIN_EMAIL: 'admin@admin.com'
       ADMIN_PASSWORD: 'admin'
+
+  pgadmin:
+    container_name: enflujo-cms-pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - 5050:80
+    volumes:
+      - ./pgadmin:/var/lib/pgadmin
+    depends_on:
+      - database
+    networks:
+      - enflujo-cms-network
+    environment:
+      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
+      PGADMIN_DEFAULT_PASSWORD: 'admin'
 # Activa la red que orquesta la comunicación entre todos los contenedores.
 networks:
   enflujo-cms-network:
