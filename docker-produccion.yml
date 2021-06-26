@@ -18,6 +18,8 @@ services:
     # Nombre para docker.
     container_name: enflujo-cms-cache
     image: redis:6
+    expose:
+      - ${REDIS_PORT}
     networks:
       - enflujo-cms-network
   directus:
@@ -52,7 +54,7 @@ services:
 
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://cache:6379'
+      CACHE_REDIS: 'redis://cache:${REDIS_PORT}'
 
       EMAIL_FROM: ${EMAIL_FROM}
       EMAIL_TRANSPORT: ${EMAIL_TRANSPORT}
