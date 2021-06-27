@@ -18,6 +18,7 @@ services:
     # Nombre para docker.
     container_name: enflujo-cms-cache
     image: redis:6
+    command: --port ${REDIS_PORT}
     expose:
       - ${REDIS_PORT}
     networks:
