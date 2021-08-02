@@ -18,9 +18,7 @@ services:
     # Nombre para docker.
     container_name: enflujo-cms-cache
     image: redis:6
-    command: --port ${REDIS_PORT}
-    expose:
-      - ${REDIS_PORT}
+    restart: unless-stopped
     networks:
       - enflujo-cms-network
   directus:
@@ -63,7 +61,7 @@ services:
       EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT}
       EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
-      EMAIL_SMTP_SECURE: 'true'
+      EMAIL_SMTP_SECURE: 'false'
 
       # OAuth para logearse desde una cuenta propia
 

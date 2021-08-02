@@ -85,3 +85,4 @@ node_modules
 data/
 dump/*
 !dump/README.md
+pgadmin
