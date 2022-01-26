@@ -11,9 +11,8 @@ services:
     # Nombre para docker (útil para reconocer en interfaces de Docker)
     container_name: enflujo-cms-database
     # La imagen para la base de datos que se descarga de docker hub. 
-    image: postgres:13
-    ports:
-      - 5432:5432
+    image: postgis/postgis:13-master
+    restart: unless-stopped
     # Persistencia de datos ya que cuando se apaga el contenedor se pierde.
     # La copia local que se mapea con el contenedor esta en /cms/data.
     volumes:
@@ -24,9 +23,9 @@ services:
       - enflujo-cms-network
     # Variables ambiente para la base de datos.
     environment:
-      POSTGRES_USER: 'enflujo'
-      POSTGRES_PASSWORD: 'enflujo'
-      POSTGRES_DB: 'enflujo'
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_DATABASE}
 
   # ----- CONTENEDOR PARA SISTEMA CACHE -----
 
@@ -36,6 +35,7 @@ services:
     container_name: enflujo-cms-cache
     # La imagen para el sistema de cache que se descarga de docker hub.
     image: redis:6
+    restart: unless-stopped
     # Nombre de la red de Docker que se encarga de orquestar la comunicación entre las aplicaciones / contenedores separados.
     networks:
       - enflujo-cms-network
@@ -50,11 +50,12 @@ services:
     container_name: enflujo-cms
     # La imagen para el CMS que se descarga de docker hub. 
     image: directus/directus
+    restart: unless-stopped
     # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
     # Los puertos se indican así - local:contenedor - el local se puede cambiar a otro si quisieramos o si lo tenemos ocupado. 
     ports:
-      - 8055:8055
+      - ${WEB_PORT}:8055
     # Los volumenes ayudan a mapear carpetas del contenedor con copias locales y de esta manera persisten en cada inicio del contenedor.
     volumes:
       # Copia local de los uploads queda en /cms/uploads
@@ -70,44 +71,49 @@ services:
       - database
     # Las variables ambiente del CMS, se pueden poner acá o en el archivo /.env durante producción.
     environment:
-      KEY: '681c9420-b815-4325-9394-9f233fda62dc'
-      SECRET: '3781c7d7-cf26-4a3b-9a33-8d584309c05b'
+      PUBLIC_URL: ${PUBLIC_URL}
+      KEY: ${KEY}
+      SECRET: ${SECRET}
 
       # Variables para conectarse al contenedor que tiene la base de datos.
       DB_CLIENT: 'pg'
       DB_HOST: 'enflujo-cms-database'
-      DB_PORT: '5432'
+      DB_PORT: ${DB_PORT}
+
       # El nombre de la base de datos y sus credenciales las definimos antes en el contenedor de la base de datos.
       # Acá debemos usar las mismas.
-      DB_DATABASE: 'enflujo'
-      DB_USER: 'enflujo'
-      DB_PASSWORD: 'enflujo'
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}
 
       # Variables para conectarse al contenedor del sistema de cache.
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://cache:6379'
+      CACHE_REDIS: 'redis://cache:${REDIS_PORT}'
 
       # Un usuario inicial para poder probar el CMS localmente, queda guardado en la base de datos.
       # Esto cambia en el despliegue.
       # https://docs.directus.io/reference/environment-variables/#misc
-      ADMIN_EMAIL: 'admin@admin.com'
-      ADMIN_PASSWORD: 'admin'
+      ADMIN_EMAIL: ${ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
 
-  pgadmin:
-    container_name: enflujo-cms-pgadmin
-    image: dpage/pgadmin4
-    ports:
-      - 5050:80
-    volumes:
-      - ./pgadmin:/var/lib/pgadmin
-    depends_on:
-      - database
-    networks:
-      - enflujo-cms-network
-    environment:
-      PGADMIN_DEFAULT_EMAIL: 'admin@admin.com'
-      PGADMIN_DEFAULT_PASSWORD: 'admin'
+      EMAIL_FROM: ${EMAIL_FROM}
+      EMAIL_TRANSPORT: ${EMAIL_TRANSPORT}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_HOST}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USER}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD}
+      EMAIL_SMTP_SECURE: 'true'
+
+      # OAuth para logearse desde una cuenta propia
+      AUTH_PROVIDERS: 'github'
+      AUTH_GITHUB_DRIVER: 'oauth2'
+      AUTH_GITHUB_CLIENT_ID: ${GITHUB_OAUTH_CLIENT_ID}
+      AUTH_GITHUB_CLIENT_SECRET: ${GITHUB_OAUTH_SECRET}
+      AUTH_GITHUB_AUTHORIZE_URL: https://github.com/login/oauth/authorize
+      AUTH_GITHUB_ACCESS_URL: https://github.com/login/oauth/access_token
+      AUTH_GITHUB_PROFILE_URL: https://api.github.com/user
+
 # Activa la red que orquesta la comunicación entre todos los contenedores.
 networks:
   enflujo-cms-network:
