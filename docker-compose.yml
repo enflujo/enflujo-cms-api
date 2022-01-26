@@ -55,7 +55,7 @@ services:
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
     # Los puertos se indican así - local:contenedor - el local se puede cambiar a otro si quisieramos o si lo tenemos ocupado. 
     ports:
-      - '${WEB_PORT}:8055'
+      - ${WEB_PORT}:8055
     # Los volumenes ayudan a mapear carpetas del contenedor con copias locales y de esta manera persisten en cada inicio del contenedor.
     volumes:
       # Copia local de los uploads queda en /cms/uploads
