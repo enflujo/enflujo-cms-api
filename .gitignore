@@ -86,3 +86,5 @@ data/
 dump/*
 !dump/README.md
 pgadmin
+dump/**.sql
+uploads/
