@@ -17,7 +17,8 @@ jobs:
           username: ${{ secrets.USUARIO }}
           password: ${{ secrets.CLAVE }}
           script: |
-            export NVM_DIR=~/.nvm
-            source ~/.nvm/nvm.sh
             cd ${{ secrets.RUTA }}
             git pull
+            docker-compose down
+            docker-compose pull
+            docker-compose -f docker-produccion.yml up -d
