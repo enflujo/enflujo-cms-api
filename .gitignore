@@ -82,7 +82,7 @@ node_modules
 ############################
 
 .env
-data/
+datos/
 dump/*
 !dump/README.md
 pgadmin
