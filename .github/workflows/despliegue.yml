@@ -21,4 +21,4 @@ jobs:
             git pull
             docker-compose down
             docker-compose pull
-            docker-compose -f docker-produccion.yml up -d
+            docker-compose up -d
