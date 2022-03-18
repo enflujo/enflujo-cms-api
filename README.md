@@ -1,10 +1,15 @@
 # EnFlujo CMS + API
 
+![Estilo Código](https://github.com/enflujo/enflujo-cms-api/actions/workflows/estilo-codigo.yml/badge.svg)
+![Despliegue](https://github.com/enflujo/enflujo-cms-api/actions/workflows/despliegue.yml/badge.svg)
+![Tamaño](https://img.shields.io/github/repo-size/enflujo/enflujo-cms-api?color=%235757f7&label=Tama%C3%B1o%20repo&logo=open-access&logoColor=white)
+![Licencia](https://img.shields.io/github/license/enflujo/enflujo-cms-api?label=Licencia&logo=open-source-initiative&logoColor=white)
+
 <img src="./docs/EnFlujo-Logo.svg" alt="EnFlujo Laboratorio" width="400">
 
 El administrador de contenidos para los diferentes sitios web del laboratorio.
 
-Es un *headless CMS* en [Directus](https://directus.io/) independiente de las aplicaciones que construyen los sitios web. La idea es que el CMS sea un sitio único para administrar los contenidos, y que este exponga los datos por medio de un API. Usamos la nueva versión de Directus **>9** que esta hecha en NodeJS (antes era PHP).
+Es un _headless CMS_ en [Directus](https://directus.io/) independiente de las aplicaciones que construyen los sitios web. La idea es que el CMS sea un sitio único para administrar los contenidos, y que este exponga los datos por medio de un API. Usamos la nueva versión de Directus **>9** que esta hecha en NodeJS (antes era PHP).
 
 :octocat: Este repositorio contiene la instancia de desarrollo del CMS pero cualquiera lo puede descargar, modificar y usarlo para otros proyectos.
 
@@ -19,13 +24,13 @@ Es un *headless CMS* en [Directus](https://directus.io/) independiente de las ap
 Debe descargar este repositorio en su computador. Desde el terminal, ir a la carpeta donde quiere descargar los archivos y desde allí clonar este repo:
 
 ```sh
-git clone https://github.com/enflujo/sitios-cms-api.git
+git clone https://github.com/enflujo/enflujo-cms-api.git
 ```
 
 Entrar a la carpeta que acaba de clonar:
 
 ```sh
-cd sitios-cms-api
+cd enflujo-cms-api
 ```
 
 ### Iniciar contenedores Docker
@@ -52,7 +57,7 @@ Para apagar los contenedores:
 docker-compose down
 ```
 
-La primera ves que iniciamos los contenedores se puede demorar mientras descarga las imágenes necesarias de Docker Hub. Luego de esa primera descarga, las imágenes quedan guardadas en su computador y el inicio es más rápido. *En este caso, imágenes se refiere a imágenes de Docker.*
+La primera ves que iniciamos los contenedores se puede demorar mientras descarga las imágenes necesarias de Docker Hub. Luego de esa primera descarga, las imágenes quedan guardadas en su computador y el inicio es más rápido. _En este caso, imágenes se refiere a imágenes de Docker._
 
 Las imágenes que usa esta aplicación son (ver la configuración y versiones en `docker-compose.yaml`):
 
@@ -64,7 +69,7 @@ Las imágenes que usa esta aplicación son (ver la configuración y versiones en
 
 En Docker, cada ves que apagamos los contenedores se pierden los datos, pero para facilitar el desarrollo vamos a tener una estructura básica de inicio y algunos assets que construyen el administrador con esta configuración inicial.
 
-En la primera iniciada de los contenedores se van a crear unas carpetas dentro de `/sitios-cms-api` que estarán conectadas a los contenedores por medio de [Volumes](https://docs.docker.com/storage/volumes/). Que básicamente se encargan de crear un espejo entre los archivos dentro de los contenedores y unas carpetas locales. En el `docker-compose.yaml` esta conexión se ve así:
+En la primera iniciada de los contenedores se van a crear unas carpetas dentro de `/enflujo-cms-api` que estarán conectadas a los contenedores por medio de [Volumes](https://docs.docker.com/storage/volumes/). Que básicamente se encargan de crear un espejo entre los archivos dentro de los contenedores y unas carpetas locales. En el `docker-compose.yaml` esta conexión se ve así:
 
 La lógica en Docker es primero la ruta local y luego la del contenedor
 
@@ -72,12 +77,12 @@ La lógica en Docker es primero la ruta local y luego la del contenedor
 
 ```yaml
 # Base de datos
-# localmente en: ./data
+# localmente en: ./datos
 # en el contenedor: /var/lib/postgresql/data
-database:
+bd:
   # ...
   volumes:
-    - ./data:/var/lib/postgresql/data
+    - ./datos:/var/lib/postgresql/data
 
 # CMS
 directus:
@@ -90,21 +95,21 @@ directus:
 Cuando iniciamos por primera vez los contenedores, el proceso se encarga de crear las carpetas locales (si no existen) y se ve algo así:
 
 ```md
-/sitios-cms-api
-  /data
-  /extensions
-  /uploads
+/enflujo-cms-api
+/datos
+/extensions
+/uploads
 ```
 
 Estas carpetas se pueden eliminar si se quiere crear una instancia de esta aplicación completamente desde cero.
 
 ## Desarrolladores de EnFlujo
 
-La instancia básica que dejamos armada en este repositorio no va a reflejar exactamente la de producción pero tiene algunos datos y assets iniciales para trabajar sobre la misma base.
+La instancia básica que dejamos armada en este repositorio no va a reflejar exactamente la de producción, pero tiene algunos datos iniciales para trabajar sobre la misma base.
 
 ### Datos
 
-La carpeta local `/data` tiene la copia de los datos del contenedor `postgres`. Esta carpeta es ignorada en este repositorio ya que contiene demasiados archivos que son innecesarios. Cada uno puede tener su propia versión de `sitios-cms-api/data/` que va a contener cualquier cambio que hagan dentro del CMS. Pueden borrar `sitios-cms-api/data/` en cualquier momento para volver al estado inicial.
+La carpeta local `/datos` tiene la copia de los datos del contenedor `postgres`. Esta carpeta es ignorada en este repositorio ya que contiene demasiados archivos que son innecesarios. Cada uno puede tener su propia versión de `enflujo-cms-api/datos/` que va a contener cualquier cambio que hagan dentro del CMS. Pueden borrar `enflujo-cms-api/datos/` en cualquier momento para volver al estado inicial.
 
 Al crear los contenedores desde cero con `docker-compose up` se van a copiar unos datos iniciales desde el archivo `dump/datos.sql`. Estos contienen:
 
@@ -117,12 +122,12 @@ El archivo `dump/datos.sql` se debe crear de nuevo cuando cambiamos alguna image
 Para crear un nuevo **dump**, ir en el terminal a esta carpeta y ejecutar el siguiente comando:
 
 ```sh
-docker exec -t enflujo-cms-database pg_dump -U enflujo --clean --column-inserts --if-exists --on-conflict-do-nothing > ./dump/datos.sql
+docker exec -t enflujo-cms-bd pg_dump -U enflujo --clean --column-inserts --if-exists --on-conflict-do-nothing > ./dump/datos.sql
 ```
 
 ### Extensiones
 
-La carpeta local `/extensions` la usamos para modificar los usos predeterminados de Directus. Estos pueden ser al panel de administrador o al API (crear nuevos *endpoints* o *hooks*, por ejemplo). Ver documentación de [extensiones en Directus](https://docs.directus.io/concepts/extensions/). 
+La carpeta local `/extensions` la usamos para modificar los usos predeterminados de Directus. Estos pueden ser al panel de administrador o al API (crear nuevos _endpoints_ o _hooks_, por ejemplo). Ver documentación de [extensiones en Directus](https://docs.directus.io/concepts/extensions/).
 
 Los cambios en este directorio si se van a ver reflejados en producción. Para hacer cambios en las extensiones, crear un branch para cada implementación y crear PR cuando se quieran proponer a revisión.
 
@@ -136,7 +141,7 @@ La carpeta `/uploads` la vamos a incluir en el repositorio pero sólo se deben i
 
 Si se cambia alguno de estos elementos, se deben borrar los viejos desde "File Library" en Directus.
 
-El proceso debe ser así: 
+El proceso debe ser así:
 
 1. Entrar como administrador a Directus.
 2. Cambiar la imagen en "Settings->Project Setting".

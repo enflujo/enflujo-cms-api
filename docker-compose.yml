@@ -10,7 +10,7 @@ services:
   bd:
     # Nombre para docker (útil para reconocer en interfaces de Docker)
     container_name: enflujo-cms-bd
-    # La imagen para la base de datos que se descarga de docker hub. 
+    # La imagen para la base de datos que se descarga de docker hub.
     image: postgis/postgis:13-master
     restart: unless-stopped
     # Persistencia de datos ya que cuando se apaga el contenedor se pierde.
@@ -39,21 +39,21 @@ services:
     # Nombre de la red de Docker que se encarga de orquestar la comunicación entre las aplicaciones / contenedores separados.
     networks:
       - enflujo-cms-red
-  
+
   # ----- CONTENEDOR PARA CMS -----
-  
+
   # Nombre de la aplicación para el CMS.
   # Para referencia del Dockerfile que construye esta imagen:
   # https://github.com/directus/directus/blob/main/.github/actions/build-images/rootfs/directus/images/main/Dockerfile
   directus:
     # Nombre para docker.
     container_name: enflujo-cms
-    # La imagen para el CMS que se descarga de docker hub. 
+    # La imagen para el CMS que se descarga de docker hub.
     image: directus/directus
     restart: unless-stopped
     # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
-    # Los puertos se indican así - local:contenedor - el local se puede cambiar a otro si quisieramos o si lo tenemos ocupado. 
+    # Los puertos se indican así - local:contenedor - el local se puede cambiar a otro si quisieramos o si lo tenemos ocupado.
     ports:
       - ${CMS_PUERTO}:8055
     # Los volumenes ayudan a mapear carpetas del contenedor con copias locales y de esta manera persisten en cada inicio del contenedor.

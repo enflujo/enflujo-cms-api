@@ -1,0 +1,16 @@
+{
+  "name": "enflujo-cms-api",
+  "version": "1.0.0",
+  "description": "Aplicación para administrar contenido que genera un API en Directus.",
+  "main": "index.js",
+  "repository": "https://github.com/enflujo/enflujo-cms-api.git",
+  "author": "Juan Camilo González <j.gonzalezj@uniandes.edu.co>",
+  "license": "MIT",
+  "scripts": {
+    "lint": "prettier --check .",
+    "lint:fix": "prettier --write --list-different ."
+  },
+  "devDependencies": {
+    "prettier": "^2.6.0"
+  }
+}
