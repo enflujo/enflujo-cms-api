@@ -1,6 +1,6 @@
 # EnFlujo CMS + API
 
-<img src="./uploads/73f63da8-453b-4db1-b4e3-c1f5da609f8f.svg" alt="EnFlujo Laboratorio" width="400">
+<img src="./docs/EnFlujo-Logo.svg" alt="EnFlujo Laboratorio" width="400">
 
 El administrador de contenidos para los diferentes sitios web del laboratorio.
 
