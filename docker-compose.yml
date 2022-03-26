@@ -74,8 +74,8 @@ services:
       PUBLIC_URL: ${CMS_URL}
       KEY: ${CMS_LLAVE}
       SECRET: ${CMS_SECRETO}
-      CORS_ENABLED: true
-      CORS_ORIGIN: true
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'true'
       # ROOT_REDIRECT: 'false'
       # SERVE_APP: 'false'
 
