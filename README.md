@@ -35,7 +35,7 @@ cd enflujo-cms-api
 
 ### Iniciar contenedores Docker
 
-Este es el comando que usamos cada ves que queremos iniciar la aplicación localmente:
+Este es el comando que usamos cada vez que queremos iniciar la aplicación localmente:
 
 ```sh
 # Si tiene problemas o quiere ver los "Logs" diretamente en el terminal,
@@ -57,7 +57,7 @@ Para apagar los contenedores:
 docker-compose down
 ```
 
-La primera ves que iniciamos los contenedores se puede demorar mientras descarga las imágenes necesarias de Docker Hub. Luego de esa primera descarga, las imágenes quedan guardadas en su computador y el inicio es más rápido. _En este caso, imágenes se refiere a imágenes de Docker._
+La primera vez que iniciamos los contenedores se puede demorar mientras descarga las imágenes necesarias de Docker Hub. Luego de esa primera descarga, las imágenes quedan guardadas en su computador y el inicio es más rápido. _En este caso, imágenes se refiere a imágenes de Docker._
 
 Las imágenes que usa esta aplicación son (ver la configuración y versiones en `docker-compose.yaml`):
 
@@ -67,7 +67,7 @@ Las imágenes que usa esta aplicación son (ver la configuración y versiones en
 
 ### Persistencia de datos y archivos
 
-En Docker, cada ves que apagamos los contenedores se pierden los datos, pero para facilitar el desarrollo vamos a tener una estructura básica de inicio y algunos assets que construyen el administrador con esta configuración inicial.
+En Docker, cada vez que apagamos los contenedores se pierden los datos, pero para facilitar el desarrollo vamos a tener una estructura básica de inicio y algunos assets que construyen el administrador con esta configuración inicial.
 
 En la primera iniciada de los contenedores se van a crear unas carpetas dentro de `/enflujo-cms-api` que estarán conectadas a los contenedores por medio de [Volumes](https://docs.docker.com/storage/volumes/). Que básicamente se encargan de crear un espejo entre los archivos dentro de los contenedores y unas carpetas locales. En el `docker-compose.yaml` esta conexión se ve así:
 
