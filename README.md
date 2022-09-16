@@ -23,24 +23,40 @@ Es un _headless CMS_ en [Directus](https://directus.io/) independiente de las ap
 
 Debe descargar este repositorio en su computador. Desde el terminal, ir a la carpeta donde quiere descargar los archivos y desde allí clonar este repo:
 
-```sh
+```bash
 git clone https://github.com/enflujo/enflujo-cms-api.git
 ```
 
 Entrar a la carpeta que acaba de clonar:
 
-```sh
+```bash
 cd enflujo-cms-api
 ```
+
+### Variables ambiente `.env`
+
+Crear un archivo que se llame `.env` y copiar en este el contenido del archivo `.env.ejemplo`. Aquí se ponen todas las claves e información privada. El archivo `.env` se omite en git (ver `.gitignore`).
 
 ### Iniciar contenedores Docker
 
 Este es el comando que usamos cada vez que queremos iniciar la aplicación localmente:
 
-```sh
+```bash
 # Si tiene problemas o quiere ver los "Logs" diretamente en el terminal,
 # puede borrar -d del comando.
-docker-compose up -d
+docker compose up -d
+```
+
+### Cambiar permiso de carpetas (Sólo en Linux)
+
+Cambiar los permisos de las carpetas que se usan en volúmenes de docker. En Linux estas carpetas tienden a quedar bloqueadas para Directus entonces no podemos subir imágenes al CMS y en los `logs` de docker vemos este error:
+
+![Error permiso carpetas](./docs/error-permiso-carpeta-docker.png)
+
+Para solucionarlo, usar:
+
+```bash
+sudo chown -R 1000:1000 ./uploads
 ```
 
 El CMS queda disponible en: http://localhost:8055/
@@ -53,8 +69,8 @@ clave: **admin**
 
 Para apagar los contenedores:
 
-```sh
-docker-compose down
+```bash
+docker compose down
 ```
 
 La primera vez que iniciamos los contenedores se puede demorar mientras descarga las imágenes necesarias de Docker Hub. Luego de esa primera descarga, las imágenes quedan guardadas en su computador y el inicio es más rápido. _En este caso, imágenes se refiere a imágenes de Docker._
@@ -121,7 +137,7 @@ El archivo `dump/datos.sql` se debe crear de nuevo cuando cambiamos alguna image
 
 Para crear un nuevo **dump**, ir en el terminal a esta carpeta y ejecutar el siguiente comando:
 
-```sh
+```bash
 docker exec -t enflujo-cms-bd pg_dump -U enflujo --clean --column-inserts --if-exists --on-conflict-do-nothing > ./dump/datos.sql
 ```
 
@@ -131,24 +147,50 @@ La carpeta local `/extensions` la usamos para modificar los usos predeterminados
 
 Los cambios en este directorio si se van a ver reflejados en producción. Para hacer cambios en las extensiones, crear un branch para cada implementación y crear PR cuando se quieran proponer a revisión.
 
-### Archivos
+### Ejecutar comandos directamente a base de datos (postgres)
 
-La carpeta `/uploads` la vamos a incluir en el repositorio pero sólo se deben incluir archivos globales del administrador que se modifican desde el CMS en "Settings->Project Setting":
+A veces toca ir al contenedor a ejecutar comandos. Este es un ejemplo de como instalar las extensiones de postgis luego de tener la base de datos creada (los contenedores deben estar corriendo para que funcionen los siguientes pasos):
 
-- **Project Logo**: Para el icono de 40 x 40 en SVG.
-- **Public Foreground**: El logo grande que se muestra en la página de inicio del CMS.
-- **Public Background**: La imagen de fondo en la página de inicio al CMS.
+Buscar el `CONTAINER ID` del contenedor de la base de datos usando el siguiente comando que imprime la lista de contenedores que están corriendo:
 
-Si se cambia alguno de estos elementos, se deben borrar los viejos desde "File Library" en Directus.
+```bash
+docker ps
+```
 
-El proceso debe ser así:
+Se ve así:
 
-1. Entrar como administrador a Directus.
-2. Cambiar la imagen en "Settings->Project Setting".
-3. Borrar la imagen que se reemplazó desde "File Library".
+![Lista contenedores de Docker](./docs/lista-contenedores.png)
 
-Estos cambios sólo se verán reflejados en esta versión del CMS de desarrollo y no en la de producción. Lo hacemos sólo para tener una versión personalizada en el espacio de desarrollo. Para cambiar la de producción, se deben repetir estos pasos en el administrador público.
+Con el ID podemos entrar al contenedor:
 
-## TODO
+```bash
+docker exec -it f06a08457661 bash
+```
 
-- Usar Switches para ignorar algunas tablas durante el dump. https://stackoverflow.com/questions/40642359/ignoring-a-table-in-pg-dump-and-restore
+Ya dentro del contenedor estamos en el shell bash donde podemos ejecutar comandos en el terminal que se ejecutan dentro del linux del contenedor. En este tenemos instalado postgres así que podemos usar comandos `psql`.
+
+Con el siguiente comando nos conectamos con la base de datos:
+
+```bash
+psql -h localhost -p 5432 -U enflujo
+```
+
+Conectados al postgres, podemos ejecutar comandos de SQL:
+
+```bash
+CREATE EXTENSION postgis;
+```
+
+```bash
+CREATE EXTENSION postgis_topology;
+```
+
+```bash
+CREATE EXTENSION fuzzystrmatch;
+```
+
+```bash
+CREATE EXTENSION postgis_tiger_geocoder;
+```
+
+Estos comandos instalan Postgis y las extensiones básicas. Esto no es necesario pero sirve de ejemplo para entrar al contenedor y ejecutar cosas directamente en el ambiente de contenedor.
