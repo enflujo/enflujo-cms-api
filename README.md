@@ -167,12 +167,12 @@ Con el ID podemos entrar al contenedor:
 docker exec -it f06a08457661 bash
 ```
 
-Ya dentro del contenedor estamos en el shell bash donde podemos ejecutar comandos en el terminal que se ejecutan dentro del linux del contenedor. En este tenemos instalado postgres así que podemos usar comandos `psql`.
+Ya dentro del contenedor estamos en el shell bash donde podemos ejecutar comandos en el terminal que se ejecutan dentro del Linux del contenedor. En este tenemos instalado Postgres así que podemos usar comandos `psql`.
 
-Con el siguiente comando nos conectamos con la base de datos:
+Con el siguiente comando nos conectamos con la base de datos, esto asume que el usuario es **enflujo** y el nombre de la base de datos es **bdenflujo**:
 
 ```bash
-psql -h localhost -p 5432 -U enflujo
+psql -h localhost -p 5432 -U enflujo -W -d bdenflujo
 ```
 
 Conectados al postgres, podemos ejecutar comandos de SQL:
