@@ -8,9 +8,12 @@
   "license": "MIT",
   "scripts": {
     "lint": "prettier --check .",
-    "lint:fix": "prettier --write --list-different ."
+    "lint:fix": "prettier --write --list-different .",
+    "extensiones": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
   },
   "devDependencies": {
+    "copyfiles": "^2.4.1",
+    "directus-extension-wpslug-interface": "^1.1.0",
     "prettier": "^2.6.0"
   }
 }
