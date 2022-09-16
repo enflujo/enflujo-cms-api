@@ -118,9 +118,8 @@ services:
       AUTH_GITHUB_PROFILE_URL: 'https://api.github.com/user'
       AUTH_GITHUB_ICON: 'github'
       AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION: 'false'
-      
-      # AUTH_GITHUB_IDENTIFIER_KEY: 'login'
-      # AUTH_GITHUB_EMAIL_KEY: 'false'
+      AUTH_GITHUB_IDENTIFIER_KEY: 'login'
+      AUTH_GITHUB_EMAIL_KEY: 'false'
 
 # Activa la red que orquesta la comunicación entre todos los contenedores.
 networks:
