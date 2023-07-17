@@ -93,7 +93,7 @@ services:
       # Variables para conectarse al contenedor del sistema de cache.
       CACHE_ENABLED: 'true'
       CACHE_STORE: 'redis'
-      CACHE_REDIS: 'redis://cache:${REDIS_PUERTO}'
+      REDIS: 'redis://cache:${REDIS_PUERTO}'
 
       # Un usuario inicial para poder probar el CMS localmente, queda guardado en la base de datos.
       # Esto cambia en el despliegue.
