@@ -49,7 +49,7 @@ services:
     # Nombre para docker.
     container_name: enflujo-cms
     # La imagen para el CMS que se descarga de docker hub.
-    image: directus/directus
+    image: directus/directus:10.8.3
     restart: unless-stopped
     # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
@@ -76,6 +76,7 @@ services:
       SECRET: ${CMS_SECRETO}
       CORS_ENABLED: 'true'
       CORS_ORIGIN: 'true'
+      ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
       # ROOT_REDIRECT: 'false'
       # SERVE_APP: 'false'
 
@@ -109,17 +110,17 @@ services:
       EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_CLAVE}
 
       # OAuth para logearse desde una cuenta propia
-      AUTH_PROVIDERS: 'github'
-      AUTH_GITHUB_DRIVER: 'oauth2'
-      AUTH_GITHUB_CLIENT_ID: ${GITHUB_ID_CLIENTE}
-      AUTH_GITHUB_CLIENT_SECRET: ${GITHUB_SECRETO}
-      AUTH_GITHUB_AUTHORIZE_URL: 'https://github.com/login/oauth/authorize'
-      AUTH_GITHUB_ACCESS_URL: 'https://github.com/login/oauth/access_token'
-      AUTH_GITHUB_PROFILE_URL: 'https://api.github.com/user'
-      AUTH_GITHUB_ICON: 'github'
-      AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION: 'false'
-      AUTH_GITHUB_IDENTIFIER_KEY: 'login'
-      AUTH_GITHUB_EMAIL_KEY: 'false'
+      # AUTH_PROVIDERS: 'github'
+      # AUTH_GITHUB_DRIVER: 'oauth2'
+      # AUTH_GITHUB_CLIENT_ID: ${GITHUB_ID_CLIENTE}
+      # AUTH_GITHUB_CLIENT_SECRET: ${GITHUB_SECRETO}
+      # AUTH_GITHUB_AUTHORIZE_URL: 'https://github.com/login/oauth/authorize'
+      # AUTH_GITHUB_ACCESS_URL: 'https://github.com/login/oauth/access_token'
+      # AUTH_GITHUB_PROFILE_URL: 'https://api.github.com/user'
+      # AUTH_GITHUB_ICON: 'github'
+      # AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION: 'false'
+      # AUTH_GITHUB_IDENTIFIER_KEY: 'login'
+      # AUTH_GITHUB_EMAIL_KEY: 'false'
 
 # Activa la red que orquesta la comunicación entre todos los contenedores.
 networks:
