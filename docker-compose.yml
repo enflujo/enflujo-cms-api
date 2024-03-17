@@ -49,7 +49,7 @@ services:
     # Nombre para docker.
     container_name: enflujo-cms
     # La imagen para el CMS que se descarga de docker hub.
-    image: directus/directus:10.8.3
+    image: directus/directus:10.10.4
     restart: unless-stopped
     # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
