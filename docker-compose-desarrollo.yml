@@ -1,0 +1,128 @@
+# Referencia de las versiones del docker-compose:
+# https://docs.docker.com/compose/compose-file/compose-versioning/
+version: '3.2'
+
+# La lista de contenedores que se van a crear y sincronizar entre si. La indentación es importante!
+services:
+  # ----- CONTENEDOR PARA BASE DE DATOS -----
+
+  # Nombre de la aplicación para la base de datos.
+  bd:
+    # Nombre para docker (útil para reconocer en interfaces de Docker)
+    container_name: enflujo-cms-bd-desarrollo
+    # La imagen para la base de datos que se descarga de docker hub.
+    image: postgis/postgis:13-master
+    # restart: unless-stopped
+    # Persistencia de datos ya que cuando se apaga el contenedor se pierde.
+    # La copia local que se mapea con el contenedor esta en /cms/data.
+    volumes:
+      - ./dump:/docker-entrypoint-initdb.d
+      - ./datos:/var/lib/postgresql/data
+    # Nombre de la red de Docker que se encarga de orquestar la comunicación entre las aplicaciones / contenedores separados.
+    networks:
+      - enflujo-cms-red-desarrollo
+    # Variables ambiente para la base de datos.
+    environment:
+      POSTGRES_USER: ${BD_USUARIO}
+      POSTGRES_PASSWORD: ${BD_CLAVE}
+      POSTGRES_DB: ${BD_NOMBRE_BD}
+
+  # ----- CONTENEDOR PARA SISTEMA CACHE -----
+
+  # Nombre de la aplicación para el sistema de cache.
+  cache:
+    # Nombre para docker.
+    container_name: enflujo-cms-cache-desarrollo
+    # La imagen para el sistema de cache que se descarga de docker hub.
+    image: redis:6
+    # restart: unless-stopped
+    # Nombre de la red de Docker que se encarga de orquestar la comunicación entre las aplicaciones / contenedores separados.
+    networks:
+      - enflujo-cms-red-desarrollo
+
+  # ----- CONTENEDOR PARA CMS -----
+
+  # Nombre de la aplicación para el CMS.
+  # Para referencia del Dockerfile que construye esta imagen:
+  # https://github.com/directus/directus/blob/main/.github/actions/build-images/rootfs/directus/images/main/Dockerfile
+  directus:
+    # Nombre para docker.
+    container_name: enflujo-cms-desarrollo
+    # La imagen para el CMS que se descarga de docker hub.
+    image: directus/directus:10.10.4
+    # restart: unless-stopped
+    # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
+    # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
+    # Los puertos se indican así - local:contenedor - el local se puede cambiar a otro si quisieramos o si lo tenemos ocupado.
+    ports:
+      - 8055:8055
+    # Los volumenes ayudan a mapear carpetas del contenedor con copias locales y de esta manera persisten en cada inicio del contenedor.
+    volumes:
+      # Copia local de los uploads queda en /cms/uploads
+      - ./uploads:/directus/uploads
+      # Copia local de las extensiones queda en /cms/extensions
+      - ./extensions:/directus/extensions
+    # Nombre de la red de Docker que se encarga de orquestar la comunicación entre las aplicaciones / contenedores separados.
+    networks:
+      - enflujo-cms-red-desarrollo
+    # Al iniciar el contenedor le indicamos a Docker que aplicaciones se deben iniciar antes de esta ya que esta depenede de esos otros servicios.
+    depends_on:
+      - cache
+      - bd
+    # Las variables ambiente del CMS, se pueden poner acá o en el archivo /.env durante producción.
+    environment:
+      PUBLIC_URL: ${CMS_URL}
+      KEY: ${CMS_LLAVE}
+      SECRET: ${CMS_SECRETO}
+      CORS_ENABLED: 'true'
+      CORS_ORIGIN: 'true'
+      ASSETS_TRANSFORM_IMAGE_MAX_DIMENSION: '9000'
+      MAX_PAYLOAD_SIZE: '5mb'
+      # ROOT_REDIRECT: 'false'
+      # SERVE_APP: 'false'
+
+      # Variables para conectarse al contenedor que tiene la base de datos.
+      DB_CLIENT: 'pg'
+      DB_HOST: 'enflujo-cms-bd-desarrollo'
+      DB_PORT: '5432'
+
+      # El nombre de la base de datos y sus credenciales las definimos antes en el contenedor de la base de datos.
+      # Acá debemos usar las mismas.
+      DB_DATABASE: ${BD_NOMBRE_BD}
+      DB_USER: ${BD_USUARIO}
+      DB_PASSWORD: ${BD_CLAVE}
+
+      # Variables para conectarse al contenedor del sistema de cache.
+      CACHE_ENABLED: 'true'
+      CACHE_STORE: 'redis'
+      REDIS: 'redis://cache:${REDIS_PUERTO}'
+
+      # Un usuario inicial para poder probar el CMS localmente, queda guardado en la base de datos.
+      # Esto cambia en el despliegue.
+      # https://docs.directus.io/reference/environment-variables/#misc
+      ADMIN_EMAIL: ${CMS_EMAIL}
+      ADMIN_PASSWORD: ${CMS_CLAVE}
+
+      EMAIL_FROM: ${EMAIL_CORREO}
+      EMAIL_TRANSPORT: ${EMAIL_TIPO}
+      EMAIL_SMTP_HOST: ${EMAIL_SMTP_PROVEEDOR}
+      EMAIL_SMTP_PORT: ${EMAIL_SMTP_PUERTO}
+      EMAIL_SMTP_USER: ${EMAIL_SMTP_USUARIO}
+      EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_CLAVE}
+
+      # OAuth para logearse desde una cuenta propia
+      # AUTH_PROVIDERS: 'github'
+      # AUTH_GITHUB_DRIVER: 'oauth2'
+      # AUTH_GITHUB_CLIENT_ID: ${GITHUB_ID_CLIENTE}
+      # AUTH_GITHUB_CLIENT_SECRET: ${GITHUB_SECRETO}
+      # AUTH_GITHUB_AUTHORIZE_URL: 'https://github.com/login/oauth/authorize'
+      # AUTH_GITHUB_ACCESS_URL: 'https://github.com/login/oauth/access_token'
+      # AUTH_GITHUB_PROFILE_URL: 'https://api.github.com/user'
+      # AUTH_GITHUB_ICON: 'github'
+      # AUTH_GITHUB_ALLOW_PUBLIC_REGISTRATION: 'false'
+      # AUTH_GITHUB_IDENTIFIER_KEY: 'login'
+      # AUTH_GITHUB_EMAIL_KEY: 'false'
+
+# Activa la red que orquesta la comunicación entre todos los contenedores.
+networks:
+  enflujo-cms-red-desarrollo:
