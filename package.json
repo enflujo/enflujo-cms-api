@@ -9,7 +9,7 @@
   "scripts": {
     "lint": "prettier --check .",
     "lint:fix": "prettier --write --list-different .",
-    "extensiones": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/interfaces/slugs"
+    "extensiones": "copyfiles -f ./node_modules/directus-extension-wpslug-interface/dist/index.js ./extensions/slugs"
   },
   "devDependencies": {
     "copyfiles": "^2.4.1",

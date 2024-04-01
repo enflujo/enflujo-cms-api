@@ -1,0 +1,13 @@
+{
+  "name": "directus-extension-slugs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "license": "MIT",
+  "directus:extension": {
+		"type": "interface",
+		"path": "index.js",
+		"source": "../node_modules/directus-extension-wpslug-interface/dist/index.js",
+		"host": "^10.0.0"
+	}
+}
