@@ -1,7 +1,3 @@
-# Referencia de las versiones del docker-compose:
-# https://docs.docker.com/compose/compose-file/compose-versioning/
-version: '3.2'
-
 # La lista de contenedores que se van a crear y sincronizar entre si. La indentación es importante!
 services:
   # ----- CONTENEDOR PARA BASE DE DATOS -----
