@@ -22,6 +22,14 @@ services:
       POSTGRES_USER: ${BD_USUARIO}
       POSTGRES_PASSWORD: ${BD_CLAVE}
       POSTGRES_DB: ${BD_NOMBRE_BD}
+    # Verificar que la base de datos esté lista antes de que Directus intente conectarse.
+    healthcheck:
+      test: ['CMD', 'pg_isready', '--host=localhost', '--username=${BD_USUARIO}']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 
   # ----- CONTENEDOR PARA SISTEMA CACHE -----
 
@@ -35,6 +43,14 @@ services:
     # Nombre de la red de Docker que se encarga de orquestar la comunicación entre las aplicaciones / contenedores separados.
     networks:
       - enflujo-cms-red-desarrollo
+    # Verificar que Redis esté listo antes de que Directus intente conectarse.
+    healthcheck:
+      test: ['CMD-SHELL', '[ $$(redis-cli ping) = ''PONG'' ]']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_interval: 5s
+      start_period: 30s
 
   # ----- CONTENEDOR PARA CMS -----
 
@@ -45,7 +61,7 @@ services:
     # Nombre para docker.
     container_name: enflujo-cms-desarrollo
     # La imagen para el CMS que se descarga de docker hub.
-    image: directus/directus:11.6.0
+    image: directus/directus:11.15.4
     # restart: unless-stopped
     # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
@@ -63,12 +79,13 @@ services:
       - enflujo-cms-red-desarrollo
     # Al iniciar el contenedor le indicamos a Docker que aplicaciones se deben iniciar antes de esta ya que esta depenede de esos otros servicios.
     depends_on:
-      - cache
-      - bd
+      cache:
+        condition: service_healthy
+      bd:
+        condition: service_healthy
     # Las variables ambiente del CMS, se pueden poner acá o en el archivo /.env durante producción.
     environment:
       PUBLIC_URL: ${CMS_URL}
-      KEY: ${CMS_LLAVE}
       SECRET: ${CMS_SECRETO}
       CORS_ENABLED: 'true'
       CORS_ORIGIN: 'true'
@@ -90,12 +107,13 @@ services:
 
       # Variables para conectarse al contenedor del sistema de cache.
       CACHE_ENABLED: 'true'
+      CACHE_AUTO_PURGE: 'true'
       CACHE_STORE: 'redis'
       REDIS: 'redis://cache:${REDIS_PUERTO}'
 
       # Un usuario inicial para poder probar el CMS localmente, queda guardado en la base de datos.
       # Esto cambia en el despliegue.
-      # https://docs.directus.io/reference/environment-variables/#misc
+      # https://directus.io/docs/configuration/general
       ADMIN_EMAIL: ${CMS_EMAIL}
       ADMIN_PASSWORD: ${CMS_CLAVE}
 
