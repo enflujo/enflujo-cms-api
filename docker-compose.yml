@@ -24,7 +24,7 @@ services:
       POSTGRES_DB: ${BD_NOMBRE_BD}
     # Verificar que la base de datos esté lista antes de que Directus intente conectarse.
     healthcheck:
-      test: ['CMD', 'pg_isready', '--host=localhost', '--username=${BD_USUARIO}']
+      test: ['CMD', 'pg_isready', '--host=localhost', '--username=${BD_USUARIO}', '--dbname=${BD_NOMBRE_BD}']
       interval: 10s
       timeout: 5s
       retries: 5

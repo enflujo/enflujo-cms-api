@@ -82,6 +82,7 @@ node_modules
 ############################
 
 .env
+.codex
 datos/
 dump/*
 !dump/README.md
@@ -99,4 +100,3 @@ respaldos/
 !.yarn/sdks
 !.yarn/versions
 .pnp.*
-

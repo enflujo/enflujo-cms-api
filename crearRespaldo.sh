@@ -1,6 +1,8 @@
 #!/bin/bash
 # crearRespaldo.sh
 
+set -euo pipefail
+
 # Cargar variables del entorno
 source .env
 
@@ -13,18 +15,24 @@ FECHA=$(date +"%Y-%m-%d_%H-%M-%S")
 # Ruta del respaldo
 ARCHIVO="./respaldos/enflujobd_${FECHA}.sql.gz"
 
+cleanup() {
+  local exit_code=$?
+  if [ $exit_code -ne 0 ]; then
+    rm -f "${ARCHIVO}"
+    echo "❌ Error al crear respaldo"
+  fi
+  exit $exit_code
+}
+
+trap cleanup EXIT
+
 # Comando de respaldo comprimido con gzip
-/usr/bin/docker exec -t enflujo-cms-bd pg_dump \
+/usr/bin/docker exec -i enflujo-cms-bd pg_dump \
   -U "${BD_USUARIO}" \
   --no-owner \
   --clean \
   "${BD_NOMBRE_BD}" \
   | gzip > "${ARCHIVO}"
 
-# Verificación
-if [ $? -eq 0 ]; then
-  echo "✅ Respaldo creado: ${ARCHIVO}"
-else
-  echo "❌ Error al crear respaldo"
-  exit 1
-fi
+trap - EXIT
+echo "✅ Respaldo creado: ${ARCHIVO}"

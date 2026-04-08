@@ -135,11 +135,15 @@ Al crear los contenedores desde cero con `docker-compose up` se van a copiar uno
 
 El archivo `dump/datos.sql` se debe crear de nuevo cuando cambiamos alguna imagen o se modifica la estructura de los datos. De esta manera los otros desarrolladores pueden reiniciar sus contenedores y tener la base con la nueva estructura.
 
-Para crear un nuevo **dump**, ir en el terminal a esta carpeta y ejecutar el siguiente comando:
+Para crear un nuevo **dump inicial** compatible con `docker-entrypoint-initdb.d`, ejecutar:
 
 ```bash
-docker exec -t enflujo-cms-bd pg_dump -U enflujo --clean --column-inserts --if-exists --on-conflict-do-nothing > ./dump/datos.sql
+./crearDumpInicial.sh
 ```
+
+Este archivo no es lo mismo que un respaldo manual. El script `crearRespaldo.sh` genera un `.sql.gz` para restaurar manualmente una base existente y no debe copiarse a `dump/`.
+
+Importante: Docker ejecuta todos los archivos `.sql` dentro de `dump/` cuando inicializa una base vacía. Mantener un solo dump canónico allí evita fallos por mezclar archivos incompatibles.
 
 ### Extensiones
 
