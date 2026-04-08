@@ -63,6 +63,9 @@ services:
     # La imagen para el CMS que se descarga de docker hub.
     image: directus/directus:11.15.4
     restart: unless-stopped
+    cpus: 1.0
+    mem_limit: 768m
+    mem_reservation: 256m
     # Mapea el puerto del computador con el puerto dentro del contenedor donde se expone la aplicación.
     # Directus esta configurado dentro del contenedor en el puerto 8055 y abrimos el local en el mismo.
     # Los puertos se indican así - local:contenedor - el local se puede cambiar a otro si quisieramos o si lo tenemos ocupado.
